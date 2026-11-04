@@ -189,8 +189,8 @@
       ],
       "nasa_verified": true,
       "short_description": "Long-lived rover that worked in Meridiani Planum for nearly 15 years.",
-      "image_url": "",
-      "image_credit": "",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/d8/NASA_Mars_Rover.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
+      "image_credit": "https://en.wikipedia.org/wiki/Opportunity_%28rover%29",
       "key_fact": "Found clay minerals and worked nearly 15 years",
       "quiz": [
         {
