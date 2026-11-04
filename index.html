@@ -51,7 +51,7 @@ select,input{border-radius:12px;background:rgba(255,255,255,.12);padding:10px 12
 /* ---- Responsive + mode switch ---- */
 :root{--js:clamp(96px,26vmin,150px);--bs:clamp(56px,15vmin,84px);--ed:clamp(14px,3.2vmin,28px);--gs:44px}
 #joy{width:var(--js);height:var(--js);left:calc(var(--ed) + env(safe-area-inset-left,0px));bottom:calc(var(--ed) + env(safe-area-inset-bottom,0px))}
-#knob{left:33.33%;top:33.33%;width:33.33%;height:33.33%}
+#knob{left:33.33%;top:33.33%;width:33.33%;height:33.33%}#joy,.tb{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}#knob{will-change:transform;transition:transform .06s linear}
 .tb{width:var(--bs);height:var(--bs);right:calc(var(--ed) + env(safe-area-inset-right,0px))}
 .tb svg.i{width:42%;height:42%}
 #bi{bottom:calc(var(--ed) + env(safe-area-inset-bottom,0px))}
@@ -97,7 +97,7 @@ body.pc #msg{bottom:calc(70px + env(safe-area-inset-bottom,0px))}
 <div class="ov" id="inv" style="z-index:8"><div id="ib2"></div></div>
 <button id="gear" class="ic" aria-label="Settings" title="Settings"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg></button>
 <div class="ov" id="set"><div class="p"><h2>Settings</h2><p style="margin:0"><b>Controls</b></p><div class="seg"><button data-m="auto">Auto</button><button data-m="pc">PC</button><button data-m="mobile">Mobile</button></div><p id="det"></p><div class="r" style="flex-wrap:wrap"><button class="s" id="hb">Show controls hint</button><button id="sx">Close</button></div></div></div>
-<div id="hint" class="p"><div class="ht">CONTROLS</div><div class="hr"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span>Move</span><span><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd></span><span>Move / turn</span><span><kbd>Mouse</kbd></span><span>Look (click once to lock)</span><span><kbd>Space</kbd></span><span>Jump</span><span><kbd>Shift</kbd></span><span>Sprint</span><span><kbd>E</kbd> / Click / Right‑click</span><span>Interact</span><span><kbd>I</kbd></span><span>Inventory</span><span><kbd>Esc</kbd></span><span>Free the mouse</span><span><kbd>H</kbd></span><span>Hide / show this</span></div></div>
+<div id="hint" class="p"><div class="ht">CONTROLS</div><div class="hr"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span>Move</span><span><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd></span><span>Look around</span><span><kbd>Mouse</kbd></span><span>Look (click once to lock)</span><span><kbd>Space</kbd></span><span>Jump</span><span><kbd>Shift</kbd></span><span>Sprint</span><span><kbd>E</kbd> / Click / Right‑click</span><span>Interact</span><span><kbd>I</kbd></span><span>Inventory</span><span><kbd>Esc</kbd></span><span>Free the mouse</span><span><kbd>H</kbd></span><span>Hide / show this</span></div></div>
 <script>
 (function(){var u=["https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js","https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js","three.min.js"],i=0;
 function run(){var s=document.createElement("script");s.textContent=document.getElementById("g").textContent;document.body.appendChild(s)}
@@ -112,7 +112,7 @@ const WD={E:{n:"Earth Launch Base",g:26,sky:0x7ec8ff,fog:[0x7ec8ff,70,220],c:[0x
 const N=80,CS=2,HALF=80;let TOT=0;
 /* ---- Real NASA data: JSON loading, coordinate placement ---- */
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
-const imgOk=u=>{if(typeof u!=="string")return"";u=u.trim();return/^https?:\/\//i.test(u)||/^(?![a-z][a-z0-9+.-]*:)[^\s<>"']+$/i.test(u)?u:""};
+const imgOk=u=>{if(typeof u!=="string")return"";u=u.trim();if(u.slice(0,2)==="//")u=location.protocol+u;if(location.protocol==="https:"&&/^http:\/\//i.test(u))u="https:"+u.slice(5);return/^https?:\/\//i.test(u)||/^(?![a-z][a-z0-9+.-]*:)[^\s<>"']+$/i.test(u)?u:""};
 const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 function place(items,ref){
 const RD=Math.PI/180,SPAN=56,MIN=11.3,RK=23,B=60;
@@ -151,7 +151,7 @@ const S=new THREE.Scene(),cam=new THREE.PerspectiveCamera(70,1,.1,600);cam.rotat
 function rs(){R.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix()}addEventListener("resize",rs);rs();
 let PH=0,IR=7,sol=[],st="TITLE",wk="E",paused=false,got=new Set(),pl={x:6,y:1,z:8,vy:0,yaw:.64,pit:0},rocket,items=[],Hh=[],sd=1,lt=0,rv=0,gy0=1,o2=100,time=0,last=0,cd=-1,spc=[];
 const ui={};function put(id,k,v){const c=id+k;if(ui[c]===v)return;ui[c]=v;const e=$(id);if(k==="t")e.textContent=v;else e.style[k]=v}
-const rnd=()=>(sd=sd*16807%2147483647)/2147483647,keys={},joy={x:0,y:0},ex=[];let jf=false;
+const rnd=()=>(sd=sd*16807%2147483647)/2147483647,keys={},joy={x:0,y:0},lv={y:0,p:0},mv={f:0,s:0},tl={x:0,y:0},ex=[];let jf=false;
 const gh=(x,z)=>Hh[Math.min(N-1,Math.max(0,Math.floor((x+HALF)/CS)))][Math.min(N-1,Math.max(0,Math.floor((z+HALF)/CS)))];
 let AC;const au=()=>{AC=AC||new(window.AudioContext||window.webkitAudioContext)()};
 function beep(f,d,t,v){if(!AC)return;const o=AC.createOscillator(),g=AC.createGain();o.type=t||"square";o.frequency.value=f;g.gain.value=v||.07;g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+d)}
@@ -324,15 +324,21 @@ function msg(t,ms){msg.l=undefined;const e=$("msg");e.innerHTML=t.replace(/\[E\]
 function hintMsg(h){if(msg.hold||h===msg.l)return;msg(h);msg.l=h}
 const playable=()=>(st==="HUB"||st==="SURF")&&!paused;
 function act(){if(!playable())return;if(Math.hypot(pl.x,pl.z)<IR){launch();return}let b=null,bd=4.5;items.forEach(o=>{if(got.has(o.id))return;const d=Math.hypot(o.x-pl.x,o.z-pl.z);if(d<bd){bd=d;b=o}});if(b){got.add(b.id);S.remove(b.g);shD=3;const it=D[b.id];$("mt").textContent=it[1];$("mi").innerHTML=cardBody(b.id);$("mc").textContent="Loaded into cargo: "+got.size+" / "+TOT;$("modal").style.display="flex";paused=true;document.exitPointerLock&&document.exitPointerLock();beep(880,.1);setTimeout(()=>beep(1320,.2),110)}}
+function die(){if(st==="DEAD")return;st="DEAD";for(const k in keys)keys[k]=0;joy.x=joy.y=0;lv.y=lv.p=0;mv.f=mv.s=0;tl.x=tl.y=0;jf=false;put("o2","width","0%");document.exitPointerLock&&document.exitPointerLock();beep(220,.4);setTimeout(()=>beep(140,.6),250);rumble(4);
+msg("💀 You ran out of oxygen.<br>Mission failed. Restarting from the beginning…");const f=$("fade");if(f)f.style.opacity=1;
+setTimeout(()=>{got.clear();o2=100;paused=false;$("ox").style.visibility="hidden";setup("E");spawn();st="HUB";if(f)f.style.opacity=0;msg("Back at the start. Collect items, but watch your oxygen!",4500)},2400)}
 function launch(){st="LAUNCH";lt=0;rv=0;cd=-1;msg("");document.exitPointerLock&&document.exitPointerLock();rumble(4)}
 function go(w){$("dest").style.display="none";setup(w);st="LAND";lt=0;rocket.position.y=gy0+PH+60;$("ox").style.visibility="visible";rumble(4)}
 function chase(sh){const p=rocket.position;cam.position.set(p.x+(Math.random()-.5)*sh,p.y+6+(Math.random()-.5)*sh,p.z+22);cam.lookAt(p.x,p.y+8,p.z)}
-function walk(dt){const ox=pl.x,oz=pl.z,d=WD[wk],sp=7*(keys.ShiftLeft||keys.ShiftRight?1.6:1);if(!paused)pl.yaw+=((keys.ArrowLeft?1:0)-(keys.ArrowRight?1:0))*2.2*dt;let f=((keys.KeyW||keys.ArrowUp)?1:0)-((keys.KeyS||keys.ArrowDown)?1:0)-joy.y,s=(keys.KeyD?1:0)-(keys.KeyA?1:0)+joy.x;const l=Math.hypot(f,s);if(l>1){f/=l;s/=l}
+function walk(dt){const ox=pl.x,oz=pl.z,d=WD[wk],sp=7*(keys.ShiftLeft||keys.ShiftRight?1.6:1);if(!paused){const ka=1-Math.exp(-dt*14);lv.y+=(((keys.ArrowLeft?1:0)-(keys.ArrowRight?1:0))*2.0-lv.y)*ka;lv.p+=(((keys.ArrowUp?1:0)-(keys.ArrowDown?1:0))*1.5-lv.p)*ka;if(Math.abs(lv.y)<.001)lv.y=0;if(Math.abs(lv.p)<.001)lv.p=0;pl.yaw+=lv.y*dt;pl.pit=Math.max(-1.4,Math.min(1.4,pl.pit+lv.p*dt));
+const kt=1-Math.exp(-dt*22);if(tl.x||tl.y){pl.yaw+=tl.x*kt;pl.pit=Math.max(-1.4,Math.min(1.4,pl.pit+tl.y*kt));tl.x-=tl.x*kt;tl.y-=tl.y*kt;if(Math.abs(tl.x)<1e-5)tl.x=0;if(Math.abs(tl.y)<1e-5)tl.y=0}}
+let f=(keys.KeyW?1:0)-(keys.KeyS?1:0)-joy.y,s=(keys.KeyD?1:0)-(keys.KeyA?1:0)+joy.x;const l=Math.hypot(f,s);if(l>1){f/=l;s/=l}
+{const km=1-Math.exp(-dt*(f||s?16:22));mv.f+=(f-mv.f)*km;mv.s+=(s-mv.s)*km;if(Math.abs(mv.f)<.002&&!f)mv.f=0;if(Math.abs(mv.s)<.002&&!s)mv.s=0;f=mv.f;s=mv.s}
 if(!paused){pl.x+=(-Math.sin(pl.yaw)*f+Math.cos(pl.yaw)*s)*sp*dt;pl.z+=(-Math.cos(pl.yaw)*f-Math.sin(pl.yaw)*s)*sp*dt}
 pl.x=Math.max(-HALF+2,Math.min(HALF-2,pl.x));pl.z=Math.max(-HALF+2,Math.min(HALF-2,pl.z));const rd=Math.hypot(pl.x,pl.z);if(rd<3.7){pl.x*=3.7/rd;pl.z*=3.7/rd}sol.forEach(s=>{if(pl.x>s[0]&&pl.x<s[1]&&pl.z>s[2]&&pl.z<s[3]){const a=pl.x-s[0],b=s[1]-pl.x,c=pl.z-s[2],e=s[3]-pl.z,m=Math.min(a,b,c,e);if(m===a)pl.x=s[0];else if(m===b)pl.x=s[1];else if(m===c)pl.z=s[2];else pl.z=s[3]}});
 pl.x=Math.max(-HALF+2,Math.min(HALF-2,pl.x));pl.z=Math.max(-HALF+2,Math.min(HALF-2,pl.z));{const hb=()=>gh(pl.x,pl.z)>pl.y+.35;if(hb()){const nx=pl.x,nz=pl.z;pl.z=oz;if(hb()){pl.x=ox;pl.z=nz;if(hb()){pl.x=ox;pl.z=oz}}}}const gy=gh(pl.x,pl.z);if((keys.Space||jf)&&pl.y<=gy+.01&&!paused){pl.vy=Math.max(7,Math.sqrt(2*d.g*1.3));jf=false}pl.vy-=d.g*dt;pl.y+=pl.vy*dt;if(pl.y<=gy){pl.y=gy;pl.vy=0}
 cam.position.set(pl.x,pl.y+1.7,pl.z);cam.rotation.set(pl.pit,pl.yaw,0);
-if(wk!=="E"){const near=Math.hypot(pl.x,pl.z)<9;o2+=(near?25:-.9)*dt;o2=Math.min(100,o2);if(o2<=0){spawn();o2=100;msg("Emergency recall: O₂ refilled at the rocket",3500)}put("o2","width",Math.round(o2)+"%")}
+if(wk!=="E"){const near=Math.hypot(pl.x,pl.z)<9;o2+=(near?25:-.9)*dt;o2=Math.min(100,o2);if(o2<=0){die();return}put("o2","width",Math.round(o2)+"%")}
 if(!paused){let h="",bd=4.5;if(rd<IR)h="[E] / Interact: enter rocket and launch";items.forEach(o=>{if(got.has(o.id))return;const q=Math.hypot(o.x-pl.x,o.z-pl.z);if(q<bd){bd=q;h="[E] / Interact: collect "+esc(D[o.id][1])}});hintMsg(h)}}
 const SV=p=>`<svg class="i" viewBox="0 0 24 24">${p}</svg>`,X=SV('<path d="M18 6L6 18M6 6l12 12"/>'),BAG=SV('<path d="M5 9a4 4 0 014-4h6a4 4 0 014 4v11H5V9z"/><path d="M9 5V3h6v2M8 14h8M9 20v-4h6v4"/>'),OK=SV('<path d="M20 6L9 17l-5-5"/>'),RE=SV('<path d="M21 12a9 9 0 11-3-6.7L21 8M21 3v5h-5"/>'),CP=SV('<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>'),
 ic=n=>/Ingenuity/.test(n)?SV('<path d="M12 8v6M3 6h18M7 14h10l-1 5H8z"/>'):/Rover|Spirit|Opportunity|Pathfinder/.test(n)?SV('<path d="M3 14h18l-2-5H9L7 14"/><circle cx="7" cy="17.5" r="2.3"/><circle cx="17" cy="17.5" r="2.3"/><path d="M12 9V5M10 5h4"/>'):/Descent/.test(n)?SV('<path d="M8 7h8l2 4H6z"/><path d="M6 11l-3 9M18 11l3 9M12 11v9M1.5 20h3M19.5 20h3"/>'):SV('<rect x="9" y="9" width="6" height="6" rx="1" transform="rotate(45 12 12)"/><path d="M5 5l3 3M16 16l3 3M4 9l5-5M15 20l5-5"/>');
@@ -360,8 +366,8 @@ const cv=R.domElement;let lk=-1,lx=0,ly=0;
 document.addEventListener("mousemove",e=>{if(document.pointerLockElement===cv&&playable()){pl.yaw-=e.movementX*.0025;pl.pit=Math.max(-1.4,Math.min(1.4,pl.pit-e.movementY*.0025))}});
 const rc=new THREE.Raycaster();function pick(e){rc.setFromCamera({x:e.clientX/innerWidth*2-1,y:-(e.clientY/innerHeight)*2+1},cam);const h=rc.intersectObjects(spc.filter(m=>m.userData.w))[0];if(h){beep(700,.1);go(h.object.userData.w)}}
 cv.addEventListener("pointerdown",e=>{if(st==="SPACE"){pick(e);return}if(e.pointerType==="mouse"&&!MOB){if(e.button===2){act();return}if(document.pointerLockElement!==cv){if(playable())cv.requestPointerLock()}else act()}else{lk=e.pointerId;lx=e.clientX;ly=e.clientY;cv.setPointerCapture(lk)}});
-cv.addEventListener("pointermove",e=>{if(e.pointerId===lk&&playable()){pl.yaw-=(e.clientX-lx)*.005;pl.pit=Math.max(-1.4,Math.min(1.4,pl.pit-(e.clientY-ly)*.005));lx=e.clientX;ly=e.clientY}});
-cv.addEventListener("pointerup",e=>{if(e.pointerId===lk)lk=-1});
+cv.addEventListener("pointermove",e=>{if(e.pointerId===lk&&playable()){tl.x-=(e.clientX-lx)*.0042;tl.y-=(e.clientY-ly)*.0042;lx=e.clientX;ly=e.clientY}});
+cv.addEventListener("pointerup",e=>{if(e.pointerId===lk)lk=-1});cv.addEventListener("pointercancel",e=>{if(e.pointerId===lk)lk=-1});
 let MODE="auto",MOB=false,hs0="",hT=0,sp0=false;try{MODE=localStorage.getItem("mode")||"auto"}catch(e){}
 if(!/^(auto|pc|mobile)$/.test(MODE))MODE="auto";
 const detM=()=>matchMedia("(pointer:coarse)").matches||(("ontouchstart" in window||navigator.maxTouchPoints>0)&&Math.min(innerWidth,innerHeight)<700);
@@ -369,7 +375,7 @@ function showHint(ms){const h=$("hint");h.classList.add("on");clearTimeout(hT);h
 function toggleHint(){const h=$("hint");if(h.classList.contains("on")){clearTimeout(hT);h.classList.remove("on")}else showHint(10000)}
 function applyMode(){MOB=MODE==="mobile"||(MODE==="auto"&&detM());document.body.classList.toggle("mob",MOB);document.body.classList.toggle("pc",!MOB);
 if(MOB){document.exitPointerLock&&document.exitPointerLock();$("hint").classList.remove("on")}else showHint(8000);
-joy.x=joy.y=0;$("knob").style.transform="";lk=-1;
+joy.x=joy.y=0;tl.x=tl.y=0;$("knob").style.transform="";lk=-1;
 document.querySelectorAll("#set [data-m]").forEach(b=>b.classList.toggle("s",b.dataset.m!==MODE));
 $("det").textContent="Detected: "+(detM()?"touch device":"PC")+" · Using: "+(MOB?"Mobile":"PC")+" mode";$("hb").style.display=MOB?"none":""}
 function setMode(m){MODE=m;try{localStorage.setItem("mode",m)}catch(e){}applyMode();msg(MOB?"Mobile mode: stick to move, drag the screen to look":"PC mode: WASD to move, <kbd>E</kbd> or click to interact",3500)}
@@ -382,8 +388,10 @@ addEventListener("resize",()=>{if(MODE==="auto"&&detM()!==MOB)applyMode()});
 addEventListener("keydown",e=>{if(e.code==="KeyH"&&!e.repeat&&!MOB)toggleHint();if(e.code==="Escape"&&getComputedStyle($("set")).display!=="none")closeSet();if(e.code.startsWith("Arrow"))e.preventDefault()});
 addEventListener("blur",()=>{for(const k in keys)keys[k]=0});
 cv.addEventListener("contextmenu",e=>e.preventDefault());document.addEventListener("contextmenu",e=>{if(MOB||playable())e.preventDefault()});
+function sizeCtl(){const vv=window.visualViewport,w=vv?vv.width:innerWidth,h=vv?vv.height:innerHeight,m=Math.min(w,h),c=(lo,v,hi)=>Math.max(lo,Math.min(hi,v)),r=document.documentElement.style;r.setProperty("--js",c(104,m*.3,168)+"px");r.setProperty("--bs",c(60,m*.17,88)+"px");r.setProperty("--ed",c(16,m*.045,30)+"px")}
+sizeCtl();addEventListener("resize",sizeCtl);addEventListener("orientationchange",()=>setTimeout(sizeCtl,200));window.visualViewport&&visualViewport.addEventListener("resize",sizeCtl);
 applyMode();
-const jy=$("joy");let jp=-1;const jm=e=>{const r=jy.getBoundingClientRect(),w=r.width;let x=(e.clientX-r.left-w/2)/(w*.42),y=(e.clientY-r.top-w/2)/(w*.42);const l=Math.hypot(x,y);if(l>1){x/=l;y/=l}joy.x=x;joy.y=y;$("knob").style.transform="translate("+x*w/3+"px,"+y*w/3+"px)"};
+const jy=$("joy");let jp=-1;const jm=e=>{const r=jy.getBoundingClientRect(),w=r.width;let x=(e.clientX-r.left-w/2)/(w*.42),y=(e.clientY-r.top-w/2)/(w*.42);const l=Math.hypot(x,y);if(l>1){x/=l;y/=l}$("knob").style.transform="translate("+x*w/3+"px,"+y*w/3+"px)";const m=Math.min(1,l),dz=.12;if(m<dz){joy.x=joy.y=0}else{const k=Math.pow((m-dz)/(1-dz),1.25)/m;joy.x=x*k;joy.y=y*k}};
 jy.addEventListener("pointerdown",e=>{jp=e.pointerId;jy.setPointerCapture(jp);jm(e)});jy.addEventListener("pointermove",e=>{if(e.pointerId===jp)jm(e)});
 const je=e=>{if(e.pointerId===jp){jp=-1;joy.x=joy.y=0;$("knob").style.transform=""}};jy.addEventListener("pointerup",je);jy.addEventListener("pointercancel",je);
 $("bj").addEventListener("pointerdown",()=>jf=true);$("bi").addEventListener("pointerdown",act);
