@@ -332,9 +332,7 @@ Every in-game card shows a "✔ NASA verified" badge, the provider, the coordina
 ├── index.html            the whole game: HTML, CSS, JavaScript
 ├── moon.json             Moon artifact data
 ├── mars.json             Mars artifact data
-├── three.min.js          optional local copy of Three.js (offline fallback)
-└── assets/
-    └── nasa-insignia.png optional, shown on the rocket and building if present
+
 ```
 
 ### Stack
