@@ -70,8 +70,8 @@ You are a researcher on a data-collection expedition. You launch from Earth, lan
 
 | | |
 |---|---|
-| Play online | `[add your hosted link]` |
-| Source code | `[add your repository link]` |
+| Play online | [marufkhanop.github.io/astro-web](https://marufkhanop.github.io/astro-web/) |
+| Source code | [github.com/marufkhanop/astro-web](https://github.com/marufkhanop/astro-web) |
 
 > [!NOTE]
 > The game loads `moon.json` and `mars.json` when it starts, so it must be served from a web address such as GitHub Pages. Double-clicking `index.html` will not work. See [Running it locally](#running-it-locally).
@@ -366,8 +366,8 @@ Every in-game card shows a "✔ NASA verified" badge, the provider, the coordina
 The game fetches its JSON files, so it needs a local web server.
 
 ```bash
-git clone [your-repo-url]
-cd [your-repo-folder]
+git clone https://github.com/marufkhanop/astro-web.git
+cd astro-web
 
 # pick one
 python3 -m http.server 8000
@@ -385,41 +385,52 @@ Open `http://localhost:8000`.
 
 ## Our process
 
-The challenge rules ask teams to document how the project was made. This section is that record, in the order things happened.
+The challenge rules ask teams to document how the project was made. This section is that record.
 
-### 1. Understanding the challenge
+### 1. Initial plan
 
-We began by reading the challenge statement and working out what "storytelling" could mean for us. Our first thought was a website with a timeline, but it felt like reading an encyclopedia page. We wanted the facts to stick.
+Before using any AI tool, we mapped out the minimum we wanted to build.
 
-### 2. Initial plan
+| Area | Plan |
+|---|---|
+| Core loop | Keep it simple: start at an Earth launch base, walk to a rocket, launch into space, pick the Moon or Mars, land, and walk around a 3D surface to find and collect historical NASA hardware |
+| Tech stack | Stay lightweight: vanilla JavaScript, HTML5 and Three.js loaded from a CDN, with no heavy build tools |
+| Data | Keep all artifact data (coordinates, descriptions, quiz questions, image URLs) in JSON files, `moon.json` and `mars.json`, so the code stays separate from the content |
+| Controls and UI | Support PC (WASD and mouse look) and mobile (on-screen joystick and touch drag), with a glass-style sci-fi HUD built in plain CSS |
 
-**Original idea:** `[write your first plan in your own words: what you wanted to build, the features you listed, who was meant to do what]`
+The concept we settled on: the player is a researcher who physically visits each world, finds the equipment, and has to prove they learned something.
 
-The idea we settled on: make the player a researcher who physically visits each world, finds the equipment, and has to prove they learned something.
-
-### 3. Design decisions
+### 2. Design decisions
 
 | Decision | Reasoning |
 |---|---|
-| A game, not a report | People remember what they discover more than what they scroll past |
-| Both the Moon and Mars | The challenge covers both, and the contrast (gravity, sky, terrain) helps learning |
-| Return to Earth to submit a report | Gives the trip a purpose and a finish line |
-| Quiz only on collected items | Fair to the player and rewards reading |
-| Real coordinates for placement | The map should reflect the real layout |
-| One HTML file and two JSON files | Easy to host, submit and verify |
-| Mobile support | Most students will open it on a phone |
-| No fallback facts in code | All content must come from the verified data files |
+| A game, not a report | Players discover the facts instead of only reading them |
+| Both the Moon and Mars | The challenge covers both, and the worlds feel different (gravity, sky, terrain) |
+| Return to Earth to submit a report | Gives the trip a start and a finish |
+| Quiz only on collected items | The questions match what the player actually read |
+| Real coordinates for placement | The in-game map follows the real layout |
+| One HTML file and two JSON files | Content stays separate from code and is easy to check |
+| Desktop and mobile controls | The game plays on both |
+| No fallback facts in code | All content has to come from the data files |
 
-### 4. Research and data collection
+### 3. Research and data collection
 
-1. Listed the NASA hardware left on the Moon and Mars.
-2. Found the official NASA page for each and recorded the year, purpose, fate and coordinates.
-3. Converted all longitudes to the −180 to 180 convention.
-4. Wrote the `key_fact`, `short_description` and quiz questions in simple language and checked each answer against its source page.
-5. Saved everything in `moon.json` and `mars.json` with the source URLs on each record.
-6. Where NASA gave no separate coordinates (the rovers), reused the landing site and added a note instead of guessing.
+1. Found the official NASA page for each artifact and recorded its year, purpose, fate and coordinates.
+2. Converted NASA's 0 to 360 longitudes to the −180 to 180 range.
+3. Wrote the `key_fact`, `short_description` and quiz questions in simple language based on those pages.
+4. Stored the source URLs on every record.
+5. Where NASA gave no separate coordinates (the three Apollo rovers), reused the landing site and added a note.
 
 The full list of pages is in [Sources](#sources).
+
+### 4. Building with AI
+
+We split the work between two tools:
+
+1. **ChatGPT** as a sounding board. We described the game and asked it to help structure a detailed prompt covering the architecture, edge cases and the math (coordinate mapping, raycasting), so the code prompt would be solid and Claude would not have to guess.
+2. **Claude** to write the code. We chose it because it handles large, complete code blocks well. We gave it the structured prompt and it produced the game as a single `index.html`.
+
+The prompts are in the [prompt log](#prompt-log).
 
 ### 5. Build progress
 
@@ -441,13 +452,14 @@ The full list of pages is in [Sources](#sources).
 - [ ] Real photos on info cards (layout ready, images not added)
 - [ ] Sound polish
 
-### 6. Testing
+### 6. Problems we ran into
 
-`[add what you tested: devices, browsers, bugs found and fixed, who played it]`
+We opened the game in the browser several times while building it, and two problems stood out.
 
-### 7. Problems we ran into
-
-`[add the real problems your team hit and how you solved them]`
+| Problem | What happened | How we fixed it |
+|---|---|---|
+| Reversed controls | Movement and looking worked in the wrong direction | Corrected the control mapping and checked it again in the browser |
+| Heavy lag | The game ran slowly, especially with a large world | Limited the size of the explorable area and optimized rendering. The current build uses a fixed 160 by 160 unit play area, draws the terrain as a single instanced mesh, only refreshes shadows when something changes, and keeps the 3D models to simple shapes |
 
 ---
 
@@ -457,33 +469,48 @@ The Space Apps rules ask for openness about AI use, so here it is.
 
 | Tool | Used for |
 |---|---|
-| `[AI tool name]` | `[for example: game code, 3D models, bug fixing]` |
-| `[AI tool name]` | `[for example: quiz drafts, this README]` |
+| ChatGPT | Helping us write clear, well-structured prompts |
+| Claude | Writing the game code and drafting this README |
 
 All facts, dates and coordinates come from the NASA pages listed in [Sources](#sources), and the team checked them against those pages.
 
 ### Prompt log
 
 <details>
-<summary>Prompts we used</summary>
-
-#### Prompt 1: `[title]`
+<summary>Prompt 1: ChatGPT, building a prompt for the game engine</summary>
 
 ```text
-[paste the prompt]
+"Yo, I'm building a browser-based 3D exploration game using Three.js where players collect NASA artifacts on procedural Moon and Mars terrains. I need to write a killer prompt for Claude that will generate the core game engine script. Help me structure a prompt that covers:
+
+- Setting up a responsive Three.js scene with lighting, fog, and skyboxes that change per planet (Earth, Moon, Mars).
+- A first-person player controller that handles collision detection with terrain heightmaps and custom bounding boxes.
+- Dynamic loading of external JSON data (moon.json and mars.json) to place 3D low-poly models of landers and rovers based on real latitude/longitude scaling.
+- A state machine handling transitions from Hub -> Launch Animation -> Space Selection -> Planet Surface -> Quiz Debrief.
+
+Give me the exact prompt I should copy-paste into Claude to get this built cleanly in one go."
 ```
 
-Result: `[what came back and what you did with it]`
+Result: ChatGPT gave us a structured prompt, which we used as the base for the Claude prompt below.
 
-#### Prompt 2: `[title]`
+</details>
+
+<details>
+<summary>Prompt 2: Claude, writing the game</summary>
 
 ```text
-[paste the prompt]
+"Act as an expert frontend graphics engineer. Write a complete, self-contained single-page web app (index.html) using Three.js (r128) via CDN that implements a 3D space exploration game called 'Abandoned but Not Forgotten'.
+
+Here are the exact requirements:
+
+- Engine & Renderer: Vanilla JS, WebGLRenderer with optimized pixel ratio, shadow maps enabled, window resize listener, and error handling for missing CDNs.
+- Game States: Handle 5 distinct states: TITLE/HUB, LAUNCH (smooth rocket lift-off animation with particle exhaust), SPACE (interactive orbital view to click/select Moon or Mars), LAND (descent sequence), and SURF (surface exploration).
+- Terrain & Environment: Generate procedural heightmap terrains using an InstancedMesh for performance. Different atmospheric fog, gravity, and sky colors for Earth, Moon, and Mars.
+- NASA Data Integration: Fetch moon.json and mars.json. Dynamically convert real planetary coordinates (lat/long) into local 3D world space positions using a scaling and collision-avoidance spacing algorithm.
+- Procedural 3D Models: Write procedural generation functions for complex hardware (Viking landers, Apollo descent stages, Lunar Rovers, Ingenuity helicopter, SpaceX/commercial landers) using basic Three.js geometries combined neatly into groups.
+- UI & Controls: Build a glassmorphism CSS HUD overlay (#hud, inventory modal, settings menu). Implement dual control schemes: PC mode (WASD + PointerLock mouse look) and Mobile mode (virtual touch joystick on the left, drag-to-look, and action buttons). Include an O2 countdown timer mechanic on alien surfaces that teleports the player back if depleted."
 ```
 
-Result: `[what came back and what you did with it]`
-
-Add more entries as needed.
+Result: Claude produced the working `index.html`, which we then tested and adjusted (see [Problems we ran into](#6-problems-we-ran-into)).
 
 </details>
 
@@ -515,9 +542,11 @@ Add more entries as needed.
 
 | Name | Role |
 |---|---|
-| `[name]` | `[role]` |
-| `[name]` | `[role]` |
-| `[name]` | `[role]` |
+| Maruf Khan | UI/UX designer |
+| Omar Faruk Fahad | Developer |
+| Musrika Nur Tayiha | Narrator |
+| Atikul Islam Joy | Researcher, developer |
+| Morad Ebn Hafiz | Video editor, team leader |
 
 ---
 
