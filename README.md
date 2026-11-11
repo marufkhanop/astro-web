@@ -45,7 +45,7 @@ We worked on this challenge from the 2026 NASA Space Apps Challenge:
 
 Decades of missions have left landers, rovers, descent stages and even a helicopter on the surfaces of the Moon and Mars. Most people never learn what happened to them after the launch headlines faded. The challenge asks teams to tell those stories in an engaging, educational way.
 
-Official page: [spaceappschallenge.org](https://www.spaceappschallenge.org/2026/challenges/abandoned-but-not-forgotten-storytelling-about-nasas-discarded-equipment-on-the-moon-and-mars/)
+Official page: [spaceappschallenge.org]([https://www.spaceappschallenge.org/2026/challenges/abandoned-but-not-forgotten-storytelling-about-nasas-discarded-equipment-on-the-moon-and-mars/](https://www.spaceappschallenge.org/2026/challenges/nasas-discarded-equipment-storytelling/?tab=teams))
 
 ---
 
